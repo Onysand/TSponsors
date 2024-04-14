@@ -1,0 +1,4 @@
+name: TSponsors
+version: '${version}'
+main: org.onysand.mc.tsponsors.TSponsors
+api-version: '1.20'

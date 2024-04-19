@@ -4,7 +4,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.onysand.mc.tsponsors.commands.SubCommand;
 import org.onysand.mc.tsponsors.utils.Counters;
@@ -12,20 +11,20 @@ import org.onysand.mc.tsponsors.utils.Utils;
 
 import java.util.UUID;
 
-public class MapsCounter implements SubCommand {
+public class HeadsCounter implements SubCommand {
     @Override
     public String getName() {
-        return "gotMaps";
+        return "gotHeads";
     }
 
     @Override
     public String getDescription() {
-        return "Изменяет значение полученных спонсором карт";
+        return "Изменяет значение полученных спонсором голов";
     }
 
     @Override
     public String getSyntax() {
-        return "/scount maps <игрок> <значение>";
+        return "/scount gotHeads <игрок> +<значение>";
     }
 
     @Override
@@ -45,12 +44,18 @@ public class MapsCounter implements SubCommand {
         }
 
         UUID playerUID = Bukkit.getPlayerExact(args[1]).getUniqueId();
-        Integer now = Counters.gotMaps.get(playerUID);
+        Integer now = Counters.gotHeads.get(playerUID);
         int value = Integer.parseInt(args[2]);
         now = now == null ? 0 : now;
+        int max = Counters.getMaxes(playerUID).getOrDefault("heads", 0);
         int assignValue = now + value;
 
-        Counters.gotMaps.put(playerUID, assignValue);
-        commandSender.sendMessage(Component.text("Новое значение полученных карт: " + assignValue).color(NamedTextColor.DARK_GREEN));
+        if (assignValue > max) {
+            commandSender.sendMessage(String.format("Максимальное значение для данного игрока: %d, сейчас: %d", max, now));
+            return;
+        }
+
+        Counters.gotHeads.put(playerUID, assignValue);
+        commandSender.sendMessage(Component.text("Новое значение полученных голов: " + assignValue).color(NamedTextColor.DARK_GREEN));
     }
 }

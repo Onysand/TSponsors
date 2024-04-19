@@ -13,16 +13,13 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.onysand.mc.tsponsors.TSponsors;
 import org.onysand.mc.tsponsors.utils.Request;
 import org.onysand.mc.tsponsors.utils.Utils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-public class SitHeadCommand implements TabExecutor {
+public class MeSitCommand implements TabExecutor {
     MiniMessage mm = MiniMessage.miniMessage();
 
     @Override
@@ -44,7 +41,7 @@ public class SitHeadCommand implements TabExecutor {
 
 
         if (args.length > 0 && args[0].equalsIgnoreCase("accept")) {
-            Request request = Requests.getRequest(player.getUniqueId());
+            Request request = MeSitRequests.getRequest(player.getUniqueId());
             if (request == null) return sendFailMessage("Не найдено запросов для принятия", player);
 
             Player sender = Bukkit.getPlayer(request.getSender());
@@ -57,14 +54,14 @@ public class SitHeadCommand implements TabExecutor {
             Location senderLoc = sender.getLocation();
 
             if (receiverLoc.distance(senderLoc) > 6) return sendFailMessage("Игрок, отправивший запрос находится слишком далеко", player);
-            GSitAPI.sitOnPlayer(sender, receiver);
-            Requests.removeRequest(request);
+            GSitAPI.sitOnPlayer(receiver, sender);
+            MeSitRequests.removeRequest(request);
 
             return true;
         }
 
         if (args.length > 0 && args[0].equalsIgnoreCase("decline")) {
-            Request request = Requests.getRequest(player.getUniqueId());
+            Request request = MeSitRequests.getRequest(player.getUniqueId());
             if (request == null) return sendFailMessage("Не найдено запросов для принятия", player);
 
             Player sender = Bukkit.getPlayer(request.getSender());
@@ -78,7 +75,7 @@ public class SitHeadCommand implements TabExecutor {
             receiver.sendMessage(Component.text("Вы отклонили запрос игрока " + sender.getName())
                     .color(NamedTextColor.GREEN));
 
-            Requests.removeRequest(request);
+            MeSitRequests.removeRequest(request);
 
             return true;
         }
@@ -87,20 +84,20 @@ public class SitHeadCommand implements TabExecutor {
         if (target == null) return Utils.returnMessage(player, "Игрок не найден", NamedTextColor.DARK_RED);
         if (target == commandSender) return Utils.returnMessage(player, "Вы не можете сесть на себя :|", NamedTextColor.DARK_RED);
 
-        if (Requests.containsKey(target.getUniqueId())
-                && !Requests.getRequest(target.getUniqueId()).isExpired()) return Utils.returnMessage(player, "Вы уже отправили запрос этому игроку!", NamedTextColor.DARK_RED);
+        if (MeSitRequests.containsKey(target.getUniqueId())
+                && !MeSitRequests.getRequest(target.getUniqueId()).isExpired()) return Utils.returnMessage(player, "Вы уже отправили запрос этому игроку!", NamedTextColor.DARK_RED);
 
-        if (!commandSender.hasPermission("tsponsors.sithead.send")) {
+        if (!commandSender.hasPermission("tsponsors.mesit.send")) {
             commandSender.sendMessage(Component.text("Нет доступа к данной команде").color(NamedTextColor.DARK_RED));
             return false;
         }
 
         if (target.getLocation().distance(player.getLocation()) > 6) return Utils.returnMessage(player, "Игрок " + args[0] + " слишком далеко", NamedTextColor.DARK_RED);
 
-        Requests.addRequests(new Request(player.getUniqueId(), target.getUniqueId()));
-        target.sendMessage(mm.deserialize("Игрок " + player.getName() + " <gray>хочет сесть к вам на голову.\n" +
-                "     <green><click:run_command:'/sithead accept'>Принять</click></green> | <red><click:run_command:'/sithead decline'>Отменить</click></red></gray>"));
-        player.sendMessage(Component.text("Вы предложили игроку " + target.getName() + " сесть на его голову.")
+        MeSitRequests.addRequest(new Request(player.getUniqueId(), target.getUniqueId()));
+        target.sendMessage(mm.deserialize("Игрок " + player.getName() + " <gray>предлагает сесть вам на свою голову.\n" +
+                "     <green><click:run_command:'/mesit accept'>Принять</click></green> | <red><click:run_command:'/mesit decline'>Отменить</click></red></gray>"));
+        player.sendMessage(Component.text("Вы предложили игроку " + target.getName() + " сесть на свою голову.")
                 .color(NamedTextColor.GREEN));
 
         return true;

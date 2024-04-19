@@ -6,14 +6,14 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class Requests {
+public class MeSitRequests {
     private static final HashMap<UUID, Request> requests = new HashMap<>();
 
     public static @Nullable Request getRequest(UUID uuid) {
         return requests.get(uuid);
     }
 
-    public static void addRequests(Request request) {
+    public static void addRequest(Request request) {
         requests.put(request.getReceiver(), request);
     }
 

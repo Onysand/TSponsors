@@ -1,6 +1,7 @@
 package org.onysand.mc.tsponsors.commands.counter;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -11,30 +12,26 @@ import org.onysand.mc.tsponsors.utils.Utils;
 
 import java.util.UUID;
 
-public class RollbacksCounter implements SubCommand {
+public class ListCounters implements SubCommand {
     @Override
     public String getName() {
-        return "gotRollbacks";
+        return "list";
     }
 
     @Override
     public String getDescription() {
-        return "Изменяет значение полученных спонсором откатов";
+        return "Выводит кол-во всех полученных предметов спонсором";
     }
 
     @Override
     public String getSyntax() {
-        return "/scount gotRollbacks <игрок> +<значение>";
+        return "/scount list <игрок>";
     }
 
     @Override
     public void perform(@NotNull CommandSender commandSender, @NotNull String[] args) {
-        if (args.length <= 2) {
+        if (args.length <= 1) {
             commandSender.sendMessage(Component.text(this.getSyntax()).color(NamedTextColor.DARK_RED));
-            return;
-        }
-        if (!Utils.isNumeric(args[2])) {
-            commandSender.sendMessage(Component.text("Значение может содержать только числа").color(NamedTextColor.DARK_RED));
             return;
         }
 
@@ -44,12 +41,14 @@ public class RollbacksCounter implements SubCommand {
         }
 
         UUID playerUID = Bukkit.getPlayerExact(args[1]).getUniqueId();
-        Integer now = Counters.gotRollbacks.get(playerUID);
-        int value = Integer.parseInt(args[2]);
-        now = now == null ? 0 : now;
-        int assignValue = now + value;
 
-        Counters.gotRollbacks.put(playerUID, assignValue);
-        commandSender.sendMessage(Component.text("Новое значение полученных откатов: " + assignValue).color(NamedTextColor.DARK_GREEN));
+        TextComponent message = Component.text("=====================");
+        message = message.append(Component.text("\nПолучено карт: " + Counters.gotMaps.getOrDefault(playerUID, 0)));
+        message = message.append(Component.text("\nПолучено голов: " + Counters.gotHeads.getOrDefault(playerUID, 0)));
+        message = message.append(Component.text("\nПолучено откатов: " + Counters.gotRollbacks.getOrDefault(playerUID, 0)));
+        message = message.append(Component.text("\nПолучено пластинок: " + Counters.gotDiscs.getOrDefault(playerUID, 0)));
+        message = message.append(Component.text("\n====================="));
+
+        commandSender.sendMessage(message);
     }
 }

@@ -2,3 +2,55 @@ name: TSponsors
 version: '${version}'
 main: org.onysand.mc.tsponsors.TSponsors
 api-version: '1.20'
+authors: [ Onysand ]
+depend: [ PlaceholderAPI, GSit, dynmap, TAB, WorldGuard ]
+commands:
+  scount:
+    description: counter
+    permission: tsponsors.admin
+  tabgradient:
+    permission: tsponsors.admin
+  sithead:
+    permission: tsponsors.sithead
+  dmaphide:
+    permission: tsponsors.dmaphide
+  tbroadcast:
+    permission: tsponsors.broadcast
+    aliases:
+      - tbc
+  bighead:
+    permission: tsponsors.bighead
+  colornick:
+    permission: tsponsors.colornick
+  mesit:
+    permission: tsponsors.mesit
+
+permissions:
+  tsponsors.*:
+    description: all perms?
+  tsponsors.sithead:
+    description: sitHead command
+  tsponsors.sithead.send:
+    description: send sitHead request
+  tsponsors.dmaphide:
+    description: hide on dynmap for another 10 minutes
+  tsponsors.sponsorHide:
+    description: hide on dynmap for another 24 hours
+  tsponsors.broadcast:
+    description: sponsors broadcast with cd
+  tsponsors.bighead:
+    description: bighead command
+  tsponsors.month:
+    description: month
+  tsponsors.decade:
+    description: decade
+  tsponsors.season:
+    description: season
+  tsponsors.baypass.regionsprotecttime:
+    description: regions playtime protection baypass
+  tsponsors.colornick:
+    description: colornick command
+  tsponsors.mesit.send:
+    description: sent mesit command request
+  tsponsors.mesit:
+    description: mesit command

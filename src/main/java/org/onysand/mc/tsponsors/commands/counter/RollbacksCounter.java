@@ -11,20 +11,20 @@ import org.onysand.mc.tsponsors.utils.Utils;
 
 import java.util.UUID;
 
-public class HeadsCounter implements SubCommand {
+public class RollbacksCounter implements SubCommand {
     @Override
     public String getName() {
-        return "gotMaps";
+        return "gotRollbacks";
     }
 
     @Override
     public String getDescription() {
-        return "Изменяет значение полученных спонсором карт";
+        return "Изменяет значение полученных спонсором откатов";
     }
 
     @Override
     public String getSyntax() {
-        return "/scount maps <игрок> <значение>";
+        return "/scount gotRollbacks <игрок> +<значение>";
     }
 
     @Override
@@ -44,12 +44,18 @@ public class HeadsCounter implements SubCommand {
         }
 
         UUID playerUID = Bukkit.getPlayerExact(args[1]).getUniqueId();
-        Integer now = Counters.gotMaps.get(playerUID);
+        Integer now = Counters.gotRollbacks.get(playerUID);
         int value = Integer.parseInt(args[2]);
         now = now == null ? 0 : now;
+        int max = Counters.getMaxes(playerUID).getOrDefault("rollbacks", 0);
         int assignValue = now + value;
 
-        Counters.gotMaps.put(playerUID, assignValue);
-        commandSender.sendMessage(Component.text("Новое значение полученных карт: " + assignValue).color(NamedTextColor.DARK_GREEN));
+        if (assignValue > max) {
+            commandSender.sendMessage(String.format("Максимальное значение для данного игрока: %d, сейчас: %d", max, now));
+            return;
+        }
+
+        Counters.gotRollbacks.put(playerUID, assignValue);
+        commandSender.sendMessage(Component.text("Новое значение полученных откатов: " + assignValue).color(NamedTextColor.DARK_GREEN));
     }
 }

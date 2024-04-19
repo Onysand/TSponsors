@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id "io.papermc.paperweight.userdev" version "1.5.15"
+    id 'xyz.jpenilla.run-paper' version '2.2.3'
 }
 
 group = 'org.onysand.mc'
@@ -15,10 +17,49 @@ repositories {
         name = "sonatype"
         url = "https://oss.sonatype.org/content/groups/public/"
     }
+    maven {
+        name = "jitpack.io"
+        url = "https://jitpack.io"
+    }
+    maven {
+        name = "papi"
+        url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
+    }
+    maven {
+        name = "dynmap"
+        url = "https://repo.mikeprimm.com"
+    }
+    maven {
+        name = "krypton"
+        url = "https://repo.kryptonmc.org/releases"
+    }
+    maven {
+        name = "engine hub"
+        url = "https://maven.enginehub.org/repo/"
+    }
 }
 
 dependencies {
     compileOnly "io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT"
+    implementation "com.github.Gecolay.GSit:core:1.8.0"
+    implementation 'com.google.code.gson:gson:2.10.1'
+    compileOnly files("libs/EssentialsX-2.21.0-dev+56-1929d41.jar", "libs/Dynmap-3.7-beta-4-spigot.jar")
+    compileOnly 'me.clip:placeholderapi:2.11.5'
+    compileOnly 'me.neznamy:tab-api:4.0.2'
+    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.1.0-SNAPSHOT'
+
+    paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
+}
+
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+tasks {
+    assemble {
+        dependsOn(reobfJar)
+    }
 }
 
 def targetJavaVersion = 17
